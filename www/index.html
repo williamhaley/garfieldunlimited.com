@@ -3,60 +3,19 @@
 	<head>
 		<title>Garfield Unlimited | All the Garfields</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="marquee.css">
 		<style type="text/css">
 			body {
 				background: url('stars.gif') #bba500;
 			}
 
 			h1 {
-				height: 50px;
+				width: 100%;
 				overflow: hidden;
 				position: relative;
 				background: yellow;
-				color: orange;
-				border: 1px solid orange;
-			}
-
-			h1 p {
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				margin: 0;
-				line-height: 50px;
-				text-align: center;
-				/* Starting position */
-				-moz-transform:translateX(-100%);
-				-webkit-transform:translateX(-100%);	
-				transform:translateX(-100%);
-				/* Apply animation to this element */	
-				-moz-animation: scroll-right 2s linear infinite;
-				-webkit-animation: scroll-right 2s linear infinite;
-				animation: scroll-right 2s linear infinite;
-			}
-
-			/* Move it (define the animation) */
-			@-moz-keyframes scroll-right {
-				0%   { -moz-transform: translateX(-100%); }
-				100% { -moz-transform: translateX(100%); }
-			}
-
-			@-webkit-keyframes scroll-right {
-				0%   { -webkit-transform: translateX(-100%); }
-				100% { -webkit-transform: translateX(100%); }
-			}
-
-			@keyframes scroll-right {
-				0%   { 
-					-moz-transform: translateX(-100%); /* Browser bug fix */
-					-webkit-transform: translateX(-100%); /* Browser bug fix */
-					transform: translateX(-100%);
-				 }
-
-				100% { 
-					-moz-transform: translateX(100%); /* Browser bug fix */
-					-webkit-transform: translateX(100%); /* Browser bug fix */
-					transform: translateX(100%); 
-				}
+				color: green;
+				border: 1px solid red;
 			}
 
 			h2,
@@ -76,11 +35,16 @@
 
 			.gallery > div {
 				display: inline-block;
+				max-width: 300px;
+			}
+
+			.gallery img {
+				max-width: 100%;
 			}
 		</style>
 	</head>
 	<body>
-		<h1><p>WELCOME!</p></h1>
+		<h1 class="marquee"><span>WELCOME!</span></h1>
 		<h2>Dedicated to every Garfield</h2>
 		<div>
 			<a href="#GarfieldGardens">FORUMS (COMING SOON!!!!)</a>
