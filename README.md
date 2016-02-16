@@ -34,7 +34,7 @@ You can use the host upstream config to direct traffic to the container on that 
 
 1. Git pull on server.
 1. Copy host nginx conf.
-1. Restart docker container.
+1. Restart docker container. `docker restart ...`
 1. Don't really need the previous 2 ^^ if we're simply updating static html files.
 
 **TODO**
