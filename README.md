@@ -13,10 +13,20 @@ Install `docker`.
 ```
 # Build the base image.
 docker-build.sh
+```
 
+# Run
+
+```
 # Run the image.
 docker-start.sh
 ```
+
+This will start the server on port `8008`. That's helpful for dev and debugging, but more importantly, the server will listen on a unix socket that's exposed to the host machine.
+
+You can use the host upstream config to direct traffic to the container on that socket. That way you do not need to worry about port collisions on 80.
+
+**TODO: Uh, test this with an upstream config to make sure that claim is actually true.**
 
 # Server deploy
 
