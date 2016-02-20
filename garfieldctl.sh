@@ -1,13 +1,17 @@
 #!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
+. $DIR/ENV
 NAME="garfieldctl.sh"
-
 # TODO WFH Get a meaningful tag name.
 TAG="test-tag1"
 
-. $DIR/ENV
+refresh_container_id()
+{
+	CONTAINER_ID=$(docker ps | grep -i "$TAG" | cut -d' ' -f1)
+}
+
+refresh_container_id
 
 do_build()
 {
@@ -20,13 +24,13 @@ do_build()
 
 do_start()
 {
-	do_build
+	[[ -n "$CONTAINER_ID" ]] && echo "Container [ $TAG ] is already running." && exit 1
 
 	if [ "$DOCKER_ENV" == "PRODUCTION" ];
 	then
 		PORT=""
 	else
-		PORT="-p 8008:80"
+		PORT="-p 8008:80 -p 3000:3000"
 	fi
 
 	docker run -d \
@@ -37,6 +41,16 @@ do_start()
 		-v $DIR/nginx/run:/var/run/nginx \
 		$TAG:latest > $DIR/container.pid
 
+	# TODO WFH Comment until I figure out how prod looks vs dev.
+	#if [ "$DOCKER_ENV" != "PRODUCTION" ];
+	#then
+		rm -f $DIR/nginx/run/nginx.sock
+
+		refresh_container_id
+
+		docker exec -i -t $CONTAINER_ID nginx
+	#fi
+
 	RETVAL="$?"
 
 	return "$RETVAL"
@@ -44,8 +58,6 @@ do_start()
 
 do_stop()
 {
-	CONTAINER_ID=$(docker ps | grep -i "$TAG" | cut -d' ' -f1)
-
 	docker stop $CONTAINER_ID
 
 	RETVAL="$?"
@@ -65,8 +77,6 @@ do_restart()
 
 do_shell()
 {
-	CONTAINER_ID=$(docker ps | grep -i "$TAG" | cut -d' ' -f1)
-
 	docker exec -i -t $CONTAINER_ID /bin/bash
 
 	RETVAL="$?"
@@ -74,6 +84,7 @@ do_shell()
 	return "$RETVAL"
 }
 
+# Install configs to host nginx.
 do_install()
 {
 	[[ $EUID -ne 0 ]] && echo "Must run as root." && exit 1

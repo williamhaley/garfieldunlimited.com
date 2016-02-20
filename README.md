@@ -38,6 +38,7 @@ git clone https://github.com/williamhaley/garfieldunlimited.com /srv/garfieldunl
 ```
 cd /srv/garfieldunlimited.com
 git pull
+./garfieldctl.sh build
 ./garfieldctl.sh start
 ```
 
