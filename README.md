@@ -17,6 +17,8 @@ If the environment is not production, you can bypass the need to have nginx inst
 
 It is entirely optional to modify this config, but may make more sense as the scope and complexity increase.
 
+The `ENV` file is in git, but changes to it are ignored using `git update-index --assume-unchanged ENV`.
+
 # Install
 
 You should be able to apply these instructions both to your dev environment and a production server.
