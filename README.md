@@ -26,7 +26,6 @@ You should be able to apply these instructions both to your dev environment and 
 This assumes you already have a secure host server running with nginx [and docker](https://docs.docker.com/engine/installation/linux/ubuntulinux/).
 
 ```
-ssh garfieldunlimited.com
 sudo mkdir /srv
 sudo chown $USER /srv
 git clone https://github.com/williamhaley/garfieldunlimited.com /srv/garfieldunlimited.com
