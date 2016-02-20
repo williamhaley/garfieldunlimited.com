@@ -23,11 +23,11 @@ git pull
 ./garfieldctl.sh start
 ```
 
-# Production deployment
+# Production vs Development
 
-A production setup for this app would be a host with docker and nginx. Nginx on the host proxies requests over a unix socket to the container.
+A production setup for this app would involve a host server with docker and nginx. Nginx on the host proxies requests over a unix socket to the container.
 
-This assumes you already have a secure host server running with nginx [and docker](https://docs.docker.com/engine/installation/linux/ubuntulinux/).
+Assuming you already have a secure host server running with nginx [and docker](https://docs.docker.com/engine/installation/linux/ubuntulinux/), you can run this command to setup the host nginx config and other settings.
 
 
 ```
@@ -36,16 +36,12 @@ This assumes you already have a secure host server running with nginx [and docke
 
 You could do this on your dev machine and in prod to achieve identical setups. However, it's a bit overkill for a local dev setup, so you may feel free to skip all this until you're ready for prime time.
 
-# Dev vs Prod
+When run for production, no http ports are directly served up from the container. Only the unix socket. On a dev setup, http parts are served to make development easier.
 
 The `ENV` file can be used to toggle the environment setup.
 
 * `PRODUCTION` - the docker container will have no port forwarding.
-* Anything else - the docker container will be exposed on port `8008`.
-
-If the environment is not production, you can bypass the need to have nginx installed on the host machine. It makes dev work easier, but does not totally mimic production.
-
-It is entirely optional to modify this config, but may make more sense as the scope and complexity increase.
+* Anything else - the docker container will server nginx on port `8008` and node on `3000`.
 
 The `ENV` file is in git, but changes to it are ignored using `git update-index --assume-unchanged ENV`.
 
