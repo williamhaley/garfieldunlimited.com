@@ -2,7 +2,12 @@ FROM ubuntu
 
 # ADD www /var/www/html
 
-RUN apt-get update && apt-get install -y nginx
+RUN apt-get update
+RUN apt-get install -y nginx
+RUN apt-get install -y npm curl
+RUN npm install -g n
+RUN n 4.3.1
+
 RUN echo "\ndaemon off;" >> /etc/nginx/nginx.conf
 
 # Define mountable directories.
