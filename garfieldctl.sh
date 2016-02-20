@@ -4,7 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . $DIR/ENV
 NAME="garfieldctl.sh"
 # TODO WFH Get a meaningful tag name.
-TAG="test-tag1"
+TAG="garfieldunlimited"
 
 refresh_container_id()
 {
@@ -37,7 +37,7 @@ do_start()
 		$PORT \
 		-v $DIR/logs:/var/log/nginx \
 		-v $DIR/nginx/sites-enabled:/etc/nginx/sites-enabled \
-		-v $DIR/www:/var/www/html \
+		-v $DIR/www:/var/www \
 		-v $DIR/nginx/run:/var/run/nginx \
 		$TAG:latest > $DIR/container.pid
 

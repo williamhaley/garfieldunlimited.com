@@ -2,3 +2,4 @@ container.pid
 logs/*
 run/*
 ENV
+www/node_modules
