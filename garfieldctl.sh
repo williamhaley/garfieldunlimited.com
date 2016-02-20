@@ -63,11 +63,13 @@ do_shell()
 
 do_install()
 {
-	sudo cp /srv/garfieldunlimited.com/nginx/host-garfieldunlimited.com.conf /etc/nginx/sites-available/
+	[[ $EUID -ne 0 ]] && echo "Must run as root." && exit 1
 
-	sudo ln -sf /etc/nginx/sites-available/host-garfieldunlimited.com.conf /etc/nginx/sites-enabled/
+	cp /srv/garfieldunlimited.com/nginx/host-garfieldunlimited.com.conf /etc/nginx/sites-available/
 
-	sudo service nginx restart
+	ln -sf /etc/nginx/sites-available/host-garfieldunlimited.com.conf /etc/nginx/sites-enabled/
+
+	service nginx restart
 
 	RETVAL="$?"
 
