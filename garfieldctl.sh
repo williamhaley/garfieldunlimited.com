@@ -17,7 +17,11 @@ do_start()
 {
 	do_build
 
-	docker run -d -p 8008:80 \
+	# TODO WFH Only expose an HTTP port for debugging. Maybe if we pass in a
+	# flag like "debug" or "dev".s
+
+	docker run -d \
+		# -p 8008:80 \
 		-v $DIR/logs:/var/log/nginx \
 		-v $DIR/nginx/sites-enabled:/etc/nginx/sites-enabled \
 		-v $DIR/www:/var/www/html \
