@@ -7,6 +7,8 @@ NAME="garfieldctl.sh"
 # TODO WFH Get a meaningful tag name.
 TAG="test-tag1"
 
+. $DIR/ENV
+
 do_build()
 {
 	docker build -t $TAG $DIR
@@ -20,11 +22,15 @@ do_start()
 {
 	do_build
 
-	# TODO WFH Only expose an HTTP port for debugging. Maybe if we pass in a
-	# flag like "debug" or "dev".s
-	# -p 8008:80
+	if [ "$DOCKER_ENV" == "PRODUCTION" ];
+	then
+		PORT=""
+	else
+		PORT="-p 8008:80"
+	fi
 
 	docker run -d \
+		$PORT \
 		-v $DIR/logs:/var/log/nginx \
 		-v $DIR/nginx/sites-enabled:/etc/nginx/sites-enabled \
 		-v $DIR/www:/var/www/html \
