@@ -6,6 +6,17 @@
 
 This site is in no way endorsed by, or represents, anything or anyone named Garfield. It is simply a satirical website made by a weirdo.
 
+# Dev vs Prod
+
+The `ENV` file can be used to toggle the environment setup.
+
+* `PRODUCTION` - the docker container will have no port forwarding.
+* Anything else - the docker container will be exposed on port `8008`.
+
+If the environment is not production, you can bypass the need to have nginx installed on the host machine. It makes dev work easier, but does not totally mimic production.
+
+It is entirely optional to modify this config, but may make more sense as the scope and complexity increase.
+
 # Install
 
 You should be able to apply these instructions both to your dev environment and a production server.
