@@ -28,14 +28,26 @@ You can use the host upstream config to direct traffic to the container on that 
 
 **TODO: Uh, test this with an upstream config to make sure that claim is actually true.**
 
-# Server deploy
+# Server Install
 
-**TODO**
+This assumes you already have a secure server running with nginx [and docker](https://docs.docker.com/engine/installation/linux/ubuntulinux/).
 
-1. Git pull on server.
-1. Copy host nginx conf.
-1. Restart docker container. `docker restart ...`
-1. Don't really need the previous 2 ^^ if we're simply updating static html files.
+```
+ssh garfieldunlimited.com
+sudo mkdir /srv
+sudo chown $USER /srv
+git clone https://github.com/williamhaley/garfieldunlimited.com /srv/garfieldunlimited.com
+```
+
+# Server Run
+
+```
+cd /srv/garfieldunlimited.com
+git pull
+sudo cp /srv/garfieldunlimited.com/nginx/host-garfieldunlimited.com.conf /etc/nginx/sites-enabled/
+sudo service nginx restart
+./docker-start.sh
+```
 
 **TODO**
 
