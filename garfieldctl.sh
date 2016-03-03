@@ -1,10 +1,7 @@
 #!/bin/bash
 
-DOCKER_ENV=$1
-
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 NAME="garfieldctl.sh"
-# TODO WFH Get a meaningful tag name.
 TAG="garfieldunlimited"
 
 refresh_container_id()
@@ -12,7 +9,18 @@ refresh_container_id()
 	CONTAINER_ID=$(docker ps | grep -i "$TAG" | cut -d' ' -f1)
 }
 
-refresh_container_id
+verify_environment()
+{
+	if [ -z "$GARFIELD_ENV" ];
+	then
+		echo "Environment is not specified. Must specify GARFIELD_ENV.";
+
+		# Being lazy. Simply exit rather than return and subsequently handle the return code.
+		exit 1
+	fi
+
+	echo "Environment is $GARFIELD_ENV."
+}
 
 do_build()
 {
@@ -23,6 +31,10 @@ do_build()
 
 do_start()
 {
+	verify_environment
+
+	refresh_container_id
+
 	if [ -n "$CONTAINER_ID" ];
 	then
 		echo "Container is running."
@@ -30,7 +42,7 @@ do_start()
 		return 0
 	fi
 
-	if [ "$DOCKER_ENV" == "PRODUCTION" ];
+	if [ "$GARFIELD_ENV" == "PRODUCTION" ];
 	then
 		PORT=""
 	else
@@ -57,7 +69,7 @@ do_start()
 		return 1
 	fi
 
-	if [ "$DOCKER_ENV" == "PRODUCTION" ];
+	if [ "$GARFIELD_ENV" == "PRODUCTION" ];
 	then
 		docker exec -i -t $CONTAINER_ID cp /configs/localhost.prod.conf /etc/nginx/sites-enabled/
 
@@ -113,6 +125,8 @@ do_restart()
 
 do_shell()
 {
+	refresh_container_id
+
 	docker exec -i -t $CONTAINER_ID /bin/bash
 
 	return "$?"
