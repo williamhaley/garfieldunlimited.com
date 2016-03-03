@@ -1,5 +1,4 @@
 container.pid
 logs/*
-run/*
-ENV
+sockets/*
 www/node_modules

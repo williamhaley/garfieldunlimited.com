@@ -1,7 +1,8 @@
 #!/bin/bash
 
+DOCKER_ENV=$1
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $DIR/ENV
 NAME="garfieldctl.sh"
 # TODO WFH Get a meaningful tag name.
 TAG="garfieldunlimited"
@@ -30,26 +31,35 @@ do_start()
 	then
 		PORT=""
 	else
-		PORT="-p 8008:80 -p 3000:3000"
+		PORT="-p 8000:80 -p 3000:3000"
 	fi
 
 	docker run -d \
 		$PORT \
 		-v $DIR/logs:/var/log/nginx \
-		-v $DIR/nginx/sites-enabled:/etc/nginx/sites-enabled \
+		-v $DIR/sockets:/sockets \
 		-v $DIR/www:/var/www \
-		-v $DIR/nginx/run:/var/run/nginx \
+		-v $DIR/sockets:/sockets \
+		-v $DIR/configs:/configs \
 		$TAG:latest > $DIR/container.pid
 
-	# TODO WFH Comment until I figure out how prod looks vs dev.
-	#if [ "$DOCKER_ENV" != "PRODUCTION" ];
-	#then
-		rm -f $DIR/nginx/run/nginx.sock
+	refresh_container_id
 
-		refresh_container_id
+	if [ "$DOCKER_ENV" == "PRODUCTION" ];
+	then
+		docker exec -i -t $CONTAINER_ID cp /configs/localhost.prod.conf /etc/nginx/sites-enabled/
 
-		docker exec -i -t $CONTAINER_ID nginx
-	#fi
+		# Delete stale sockets.
+		rm -f $DIR/sockets/nginx.sock
+	else
+		docker exec -i -t $CONTAINER_ID cp /configs/localhost.dev.conf /etc/nginx/sites-enabled/
+
+		# If on a mac, and using docker-machine, print its IP so we know what to hit.
+		docker-machine >/dev/null 2>&1 && docker-machine ip
+	fi
+
+	# Start nginx in the container.
+	docker exec -i -t $CONTAINER_ID nginx
 
 	RETVAL="$?"
 
@@ -68,6 +78,9 @@ do_stop()
 do_restart()
 {
 	do_stop
+
+	sleep 2
+
 	do_start
 
 	RETVAL="$?"
