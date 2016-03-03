@@ -2,13 +2,13 @@
 
 ## A website for all things Garfield
 
-*And also a fun way for me to mess around with Docker*
+*And also a fun way for me to mess around with docker*
 
 This site is in no way endorsed by, or represents, anything or anyone named Garfield. It is simply a satirical website made by a weirdo.
 
 # Install on OSX
 
-OSX (and Windows) suffer from some limitations with Docker. Since they are not linux-based, they are not able to run the docker enginer natively. OSX (and Windows) run the docker engine in a VM which then runs containers. Docker commands are sent to that VM. The `Docker Toolbox` is the ideal way to setup that VM and the required environment depedencies to get docker working on non-linux systems.
+OSX (and Windows) suffer from some limitations with docker. Since they are not linux-based, they are not able to run the docker enginer natively. OSX (and Windows) run the docker engine in a VM which then runs containers. Docker commands are sent to that VM. The `Docker Toolbox` is the ideal way to setup that VM and the required environment depedencies to get docker working on non-linux systems.
 
 The docker toolbox setup mounts volumes over vboxsf. This means you cannot write unix sockets or hard links to data volumes. This is a loss of capabilities from what can be done with linux. It *is* possible to use NFS, but I have found it to be much more trouble than it is worth right now. Maybe, in the future, the experience for non-linux systems will be improved. For now, be cautious about compatability between these various environments.
 
