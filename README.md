@@ -18,11 +18,11 @@ To interact with docker, either open the `Docker Quickstart Terminal` app in Spo
 
 ```
 # ~/.bashrc
-alias docker-terminal="bash --login '/Applications/Docker/Docker Quickstart Terminal.app/Contents/Resources/Scripts/start.sh'"
+alias dockersh="bash --login '/Applications/Docker/Docker Quickstart Terminal.app/Contents/Resources/Scripts/start.sh'"
 
 source ~/.bashrc
 
-docker-terminal
+dockersh
 ```
 
 # Run

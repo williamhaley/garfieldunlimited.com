@@ -18,14 +18,17 @@ do_build()
 {
 	docker build -t $TAG $DIR
 
-	RETVAL="$?"
-
-	return "$RETVAL"
+	return "$?"
 }
 
 do_start()
 {
-	[[ -n "$CONTAINER_ID" ]] && echo "Container [ $TAG ] is already running." && exit 1
+	if [ -n "$CONTAINER_ID" ];
+	then
+		echo "Container is running."
+
+		return 0
+	fi
 
 	if [ "$DOCKER_ENV" == "PRODUCTION" ];
 	then
@@ -45,6 +48,15 @@ do_start()
 
 	refresh_container_id
 
+	if [ -n "$CONTAINER_ID" ];
+	then
+		echo "Container is running."
+	else
+		echo "Container is not running."
+
+		return 1
+	fi
+
 	if [ "$DOCKER_ENV" == "PRODUCTION" ];
 	then
 		docker exec -i -t $CONTAINER_ID cp /configs/localhost.prod.conf /etc/nginx/sites-enabled/
@@ -55,52 +67,66 @@ do_start()
 		docker exec -i -t $CONTAINER_ID cp /configs/localhost.dev.conf /etc/nginx/sites-enabled/
 
 		# If on a mac, and using docker-machine, print its IP so we know what to hit.
-		docker-machine >/dev/null 2>&1 && docker-machine ip
+		docker-machine >/dev/null 2>&1 && echo "Docker-machine IP is $(docker-machine ip)."
 	fi
 
 	# Start nginx in the container.
 	docker exec -i -t $CONTAINER_ID nginx
 
-	RETVAL="$?"
-
-	return "$RETVAL"
+	return "$?"
 }
 
 do_stop()
 {
+	refresh_container_id
+
+	if [ -z "$CONTAINER_ID" ];
+	then
+		echo "Container stopped."
+
+		rm -f $DIR/container.pid
+
+		refresh_container_id
+
+		return 0
+	fi
+
+	echo "Attempting to stop container..."
+
 	docker stop $CONTAINER_ID
 
-	RETVAL="$?"
+	sleep 1
 
-	return "$RETVAL"
+	do_stop
 }
 
 do_restart()
 {
 	do_stop
 
-	sleep 2
+	sleep 1
 
 	do_start
 
-	RETVAL="$?"
-
-	return "$RETVAL"
+	return "$?"
 }
 
 do_shell()
 {
 	docker exec -i -t $CONTAINER_ID /bin/bash
 
-	RETVAL="$?"
-
-	return "$RETVAL"
+	return "$?"
 }
 
 # Install configs to host nginx.
 do_install()
 {
-	[[ $EUID -ne 0 ]] && echo "Must run as root." && exit 1
+	if [ $EUID -ne 0 ];
+	then
+		echo "Must run as root."
+
+		return 1
+	fi
 
 	cp /srv/garfieldunlimited.com/nginx/host-garfieldunlimited.com.conf /etc/nginx/sites-available/
 
@@ -108,29 +134,39 @@ do_install()
 
 	service nginx restart
 
-	RETVAL="$?"
-
-	return "$RETVAL"
+	return "$?"
 }
 
 case "$1" in
 	start)
 		do_start
+
+		exit "$?"
 		;;
 	stop)
 		do_stop
+
+		exit "$?"
 		;;
 	restart)
 		do_restart
+
+		exit "$?"
 		;;
 	build)
 		do_build
+
+		exit "$?"
 		;;
 	shell)
 		do_shell
+
+		exit "$?"
 		;;
 	install)
 		do_install
+
+		exit "$?"
 		;;
 	*)
 		echo "Usage: $NAME {build|start|stop|restart|shell|install}" >&2
