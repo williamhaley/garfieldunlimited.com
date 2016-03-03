@@ -44,8 +44,11 @@ cd /srv/garfieldunlimited.com
 
 # Update in production
 
+**Warning: This will restart nginx on the host machine.**
+
 ```
 git pull
+sudo ./garfieldctl.sh install
 ./garfieldctl.sh build
 ./garfieldctl.sh restart
 ```
