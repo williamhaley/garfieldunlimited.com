@@ -25,13 +25,6 @@ source ~/.bashrc
 dockersh
 ```
 
-# Run
-
-```
-./garfieldctl.sh build
-./garfieldctl.sh start
-```
-
 # Install in production
 
 ```
@@ -39,18 +32,27 @@ sudo mkdir /srv
 sudo chown $USER /srv
 git clone https://github.com/williamhaley/garfieldunlimited.com /srv/garfieldunlimited.com
 cd /srv/garfieldunlimited.com
-./garfieldctl.sh install
+sudo ./garfieldctl.sh install
+```
+
+# Run
+
+```
+./garfieldctl.sh build
+./garfieldctl.sh start
 ```
 
 # Update in production
 
 **Warning: This will restart nginx on the host machine.**
 
+*TODO WFH: Put GARFIELD_ENV= variable in bashrc? Better to default to prod, or dev?*
+
 ```
 git pull
 sudo ./garfieldctl.sh install
 ./garfieldctl.sh build
-./garfieldctl.sh restart
+GARFIELD_ENV=PRODUCTION ./garfieldctl.sh restart
 ```
 
 # Production vs Development
