@@ -142,7 +142,7 @@ do_install()
 		return 1
 	fi
 
-	cp /srv/garfieldunlimited.com/nginx/host-garfieldunlimited.com.conf /etc/nginx/sites-available/
+	cp /srv/garfieldunlimited.com/configs/host-garfieldunlimited.com.conf /etc/nginx/sites-available/
 
 	ln -sf /etc/nginx/sites-available/host-garfieldunlimited.com.conf /etc/nginx/sites-enabled/
 
