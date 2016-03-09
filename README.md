@@ -25,6 +25,16 @@ source ~/.bashrc
 dockersh
 ```
 
+# Install on Linux
+
+Install docker from your package repo.
+
+```
+usermod -a -G docker $USER
+```
+
+Log out and back in.
+
 # Install in production
 
 ```
