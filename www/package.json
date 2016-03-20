@@ -29,6 +29,7 @@
   },
   "hemepage": "https://github.com/williamhaley/garfieldunlimited.com#readme",
   "dependencies": {
-    "express": "4.13.4"
+    "express": "4.13.4",
+    "socket.io": "1.0"
   }
 }

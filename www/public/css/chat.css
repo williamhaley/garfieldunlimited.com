@@ -1,0 +1,48 @@
+body {
+	margin: 0;
+}
+#chatWindow {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 7em; /* offset #controls */
+	padding: 0 1em;
+	overflow-y: scroll;
+}
+#chatWindow pre {
+	white-space: pre-wrap;
+}
+#controls {
+	text-align: center;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	background: #DDD;
+	height: 7em;
+}
+textarea {
+	width: 100%;
+	font-size: 1.2em;
+	line-height: 1.4em;
+	padding: 0.5em;
+}
+#editHandle {
+	display: none;
+}
+#editHandleForm {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin: 0.5em;
+}
+#allHandles {
+	padding: 0.5em;
+}
+.handle {
+	color: #188;
+	margin-right: 1em;
+}
+.handle.system {
+	color: #E12;
+}

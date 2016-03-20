@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+<title>nanochat</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width" >
+<link rel="stylesheet" type="text/css" href="css/chat.css">
+</head>
+<body>
+<div id="chatWindow"></div>
+<div id="controls">
+	<form action="#" id="editHandleForm">
+		<a id="handleDisplay" href="#">...</a>
+		<input id="editHandle" type="text" placeholder="Call me..." />
+		<span id="allHandles">...</span>
+	</form>
+	<textarea id="messageBox"></textarea>
+</div>
+
+<!-- TODO WFH Variable IP -->
+<script src="//192.168.99.100:3000/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+(function() {
+	var $editHandleInput = document.getElementById('editHandle');
+	var $editHandleForm = document.getElementById('editHandleForm');
+	var $handleDisplay = document.getElementById('handleDisplay');
+	var $chatWindow = document.getElementById('chatWindow');
+	var $allHandlesDisplay = document.getElementById('allHandles');
+	var $messageBox = document.getElementById('messageBox');
+
+	var socket = io.connect('http://localhost:3000');
+
+	(function init() {
+		var room = getParameterByName('room');
+		if(room.length <= 0) {
+			// connect user to random new room if they have not landed here with a room id
+			connectToRoom(randomHash());
+		} else {
+			socket.emit('subscribe', {
+				room: room,
+				handle: 'user-' + randomHash()
+			});
+		}
+	})();
+
+	// http://stackoverflow.com/questions/901115/how-can-i-get-query-string-values
+	function getParameterByName(name) {
+		name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)");
+		var results = regex.exec(location.search);
+		return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+	}
+
+	// http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
+	function randomHash() {
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			var r = Math.random()*16|0,v=c=='x'?r:r&0x3|0x8;
+			return v.toString(16);
+		});
+	}
+
+	function connectToRoom(room) {
+		window.location = window.location.origin + '/?room=' + room;
+	}
+
+	// Handle was successfully updated on server
+	function handleUpdated(handle) {
+		$handleDisplay.innerHTML = handle;
+	};
+
+	// Receive array of all connected handles
+	function listAllHandles(handles) {
+		var allHandlesString = handles.join(', ');
+		$allHandlesDisplay.innerHTML = allHandlesString;
+	}
+
+	// Handle display text was clicked
+	function onHandleClick(event) {
+		this.style.display = 'none';
+		$editHandleInput.style.display = 'inline';
+	};
+
+	// Update handle on server
+	function updateHandle(event) {
+		var handle = $editHandleInput.value.trim();
+		$editHandleInput.style.display = 'none';
+		$handleDisplay.style.display = 'inline';
+		if(handle.length <= 0) {
+			return false;
+		}
+		socket.emit('set handle', handle);
+		return false;
+	};
+
+	// Key pressed in message box
+	function onMessageBoxKeyDown(event) {
+		var textarea = event.srcElement || event.target;
+		var returnKeyCode = 13;
+		if(event.keyCode !== returnKeyCode) {
+			return true;
+		}
+
+		if(textarea.value.length <= 0) {
+			return false;
+		}
+
+		var message = textarea.value;
+		textarea.value = '';
+
+		socket.emit('message', message);
+		return false;
+	};
+
+	// http://stackoverflow.com/questions/37684/how-to-replace-plain-urls-with-links
+	function replaceURLWithHTMLLinks(text) {
+		var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+		return text.replace(exp, '<a href="$1" target="_blank">$1</a>');
+	}
+
+	// New message received from server
+	function displayNewMessage(message) {
+		var messageBody = message.body;
+		messageBody = replaceURLWithHTMLLinks(messageBody);
+		// create DOM elements and append
+		var $handle = document.createElement('span');
+		$handle.className = 'handle' + (message.handle === 'system' ? ' system' : '');
+		$handle.innerHTML = message.handle + ':';
+		var $message = document.createElement('span');
+		$message.innerHTML = messageBody;
+		var $newRow = document.createElement('pre');
+		$newRow.appendChild($handle);
+		$newRow.appendChild($message);
+		$chatWindow.appendChild($newRow);
+		// Scroll down to show new message
+		$chatWindow.scrollTop = $chatWindow.scrollHeight;
+	}
+
+	socket.on('message', displayNewMessage);
+	socket.on('my handle updated', handleUpdated);
+	socket.on('a handle was updated', listAllHandles);
+
+	$editHandleForm.onsubmit = updateHandle;
+	$handleDisplay.onclick = onHandleClick;
+	$messageBox.onkeydown = onMessageBoxKeyDown;
+})();
+</script>
+</body>
+</html>
