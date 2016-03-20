@@ -49,7 +49,7 @@ sudo ./garfieldctl.sh install
 
 ```
 ./garfieldctl.sh build
-./garfieldctl.sh start
+GARFIELD_ENV=DEVELOPMENT ./garfieldctl.sh start
 ```
 
 # Update in production
@@ -89,4 +89,3 @@ The `ENV` file is in git, but changes to it are ignored using `git update-index 
 # Notes
 
 In reality, a website like this is far better off with a traditional nginx setup. This project is meant as a trivial example. There is much more complexity than is necessary, but it is a learning experience.
-
